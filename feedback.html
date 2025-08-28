@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback ❤️</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card-container {
+      background-color: rgba(255,255,255,0.2);
+      padding: 30px 40px;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h1 {
+      font-weight: bold;
+      margin-bottom: 25px;
+      color: #ff3b5f;
+      text-align: center;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-control, textarea.form-control {
+      border-radius: 12px;
+      margin-bottom: 15px;
+      resize: none;
+    }
+
+    .btn-submit {
+      background-color: #ff6b81;
+      color: white;
+      border-radius: 25px;
+      padding: 10px 20px;
+      font-weight: bold;
+      transition: all 0.3s;
+      border: none;
+      width: 100%;
+    }
+    .btn-submit:hover {
+      background-color: #ff3b5f;
+      color: white;
+    }
+
+    p.muted {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #333;
+      text-align: center;
+    }
+
+    #musicToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 192, 203, 0.9);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <h1>Em cho anh biết cảm nhận nhé ❤️</h1>
+    <form id="feedbackForm">
+      <label class="form-label">Sau 1 tháng tìm hiểu nhau, em cảm thấy thế nào?</label>
+      <textarea name="feeling" class="form-control" rows="3" required></textarea>
+
+      <label class="form-label">Có điều gì muốn anh cải thiện không?</label>
+      <textarea name="improve" class="form-control" rows="3" placeholder="Anh sẽ cố gắng hơn vì em..."></textarea>
+
+      <button type="submit" class="btn-submit mt-3">Gửi cảm nhận</button>
+    </form>
+    <p class="muted">Nếu em chưa làm khảo sát ban đầu, hãy quay về <a href="quiz.html">đây</a>.</p>
+  </div>
+
+  <!-- Audio tự phát -->
+  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop></audio>
+  <!-- Nút bật/tắt nhạc -->
+  <button id="musicToggle">🎵 Nhạc: Bật</button>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/feedback.js"></script>
+
+  <script>
+    // tự động phát nhạc
+    const music = document.getElementById('bgMusic');
+    window.addEventListener('DOMContentLoaded', () => {
+      music.volume = 0.2;
+      music.play().catch(() => {
+        console.log('Trình duyệt chặn autoplay. Click nút để bật nhạc.');
+      });
+    });
+
+    // bật/tắt nhạc
+    const toggleBtn = document.getElementById('musicToggle');
+    toggleBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        toggleBtn.textContent = '🎵 Nhạc: Bật';
+      } else {
+        music.pause();
+        toggleBtn.textContent = '🎵 Nhạc: Tắt';
+      }
+    });
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

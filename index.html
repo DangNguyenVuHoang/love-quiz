@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chào em ❤️</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    .hearts span {
+      position: absolute;
+      animation: float 4s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1;}
+      50% { opacity: 0.7;}
+      100% { transform: translateY(-600px) rotate(360deg); opacity: 0;}
+    }
+
+    .btn-start, .btn-admin {
+      border-radius: 25px; /* bo tròn */
+      font-weight: bold;
+      padding: 12px 25px;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .btn-start {
+      background: #ff6b81;
+      color: white;
+    }
+    .btn-start:hover {
+      background: #ff3b5f;
+      color: white;
+    }
+
+    .btn-admin {
+      background: #ff9aa2;
+      color: white;
+      margin-top: 15px;
+      text-decoration: none;
+    }
+    .btn-admin:hover {
+      background: #ff6b81;
+      color: white;
+    }
+
+    #musicToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 192, 203, 0.9);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .card-container {
+      background-color: rgba(255,255,255,0.2);
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container card-container">
+    <h1 class="display-4 fw-bold mb-3">Xin chào em Khánh Linh ❤️</h1>
+    <p class="lead mb-2">Anh là Hoàng, anh có vài câu hỏi muốn hỏi em có được hông dạ 😗</p>
+    <p class="lead mb-4">Vì anh muốn được tìm hiểu về em nhiều hơn nữa đó ạ</p>
+    <a href="quiz.html" class="btn btn-start mb-3">Bắt đầu ngay</a>
+    <div class="links">
+      <a href="admin.html" class="btn-admin">Trang quản trị</a>
+    </div>
+  </div>
+
+  <!-- Floating hearts -->
+  <div class="hearts" aria-hidden="true"></div>
+
+  <!-- Audio tự phát -->
+  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop></audio>
+  <!-- Nút bật/tắt nhạc -->
+  <button id="musicToggle">🎵 Nhạc: Bật</button>
+
+  <script>
+    // render floating hearts
+    const hearts = document.querySelector('.hearts');
+    for (let i = 0; i < 20; i++) {
+      const s = document.createElement('span');
+      s.className = 'heart';
+      s.style.left = Math.random()*100+'%';
+      s.style.animationDelay = (Math.random()*4)+'s';
+      s.style.fontSize = (12+Math.random()*18)+'px';
+      s.style.color = '#ff6b81';
+      s.textContent = '♥';
+      hearts.appendChild(s);
+    }
+
+    // tự động phát nhạc
+    const music = document.getElementById('bgMusic');
+    window.addEventListener('DOMContentLoaded', () => {
+      music.volume = 0.2;
+      music.play().catch(() => {
+        console.log('Trình duyệt chặn autoplay. Click nút để bật nhạc.');
+      });
+    });
+
+    // bật/tắt nhạc
+    const toggleBtn = document.getElementById('musicToggle');
+    toggleBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        toggleBtn.textContent = '🎵 Nhạc: Bật';
+      } else {
+        music.pause();
+        toggleBtn.textContent = '🎵 Nhạc: Tắt';
+      }
+    });
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
