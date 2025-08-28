@@ -5,39 +5,70 @@ const search = document.getElementById('search');
 const refreshBtn = document.getElementById('refresh');
 
 async function load() {
-  wrap.innerHTML = 'Đang tải...';
+  wrap.innerHTML = '<div class="text-center py-3">Đang tải...</div>';
   try {
     const rows = await listAnswers();
     render(rows);
   } catch (e) {
-    wrap.innerHTML = 'Lỗi tải dữ liệu: ' + e.message;
+    wrap.innerHTML = `<div class="text-danger text-center py-3">Lỗi tải dữ liệu: ${e.message}</div>`;
   }
 }
 
 function render(rows) {
   const q = (search.value || '').toLowerCase().trim();
   const filtered = rows.filter(r => (r.name || '').toLowerCase().includes(q));
-  const head = `<div class="row head">
-    <div class="cell">Tên</div>
-    <div class="cell">Tính cách</div>
-    <div class="cell">Màu</div>
-    <div class="cell">Món</div>
-    <div class="cell">Địa điểm</div>
-    <div class="cell">Mẫu người lý tưởng</div>
-    <div class="cell">Cảm nhận</div>
-    <div class="cell">Góp ý</div>
-  </div>`;
-  const body = filtered.map(r => `<div class="row">
-    <div class="cell"><strong>${r.name || ''}</strong></div>
-    <div class="cell">${r.answers?.tinhcach || ''}</div>
-    <div class="cell">${r.answers?.color || ''}</div>
-    <div class="cell">${r.answers?.food || ''}</div>
-    <div class="cell">${r.answers?.place || ''}</div>
-    <div class="cell">${r.answers?.timhieu || ''}</div>
-    <div class="cell">${r.feedback?.feeling || ''}</div>
-    <div class="cell">${r.feedback?.improve || ''}</div>
-  </div>`).join('');
-  wrap.innerHTML = head + body;
+
+  if (!filtered.length) {
+    wrap.innerHTML = '<div class="text-center py-3">Không tìm thấy dữ liệu</div>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  table.className = 'table table-striped table-hover table-bordered mb-0';
+
+  // Head
+  const thead = document.createElement('thead');
+  thead.className = 'table-light';
+  thead.innerHTML = `
+    <tr>
+      <th>#</th>
+      <th>Tên</th>
+      <th>Tính cách</th>
+      <th>Màu</th>
+      <th>Món</th>
+      <th>Địa điểm</th>
+      <th>Mẫu người lý tưởng</th>
+      <th>Cảm nhận</th>
+      <th>Góp ý</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  // Body
+  const tbody = document.createElement('tbody');
+  filtered.forEach((r, index) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td><strong>${r.name || ''}</strong></td>
+      <td>${r.answers?.tinhcach || ''}</td>
+      <td>${r.answers?.color || ''}</td>
+      <td>${r.answers?.food || ''}</td>
+      <td>${r.answers?.place || ''}</td>
+      <td>${r.answers?.timhieu || ''}</td>
+      <td>${r.feedback?.feeling || ''}</td>
+      <td>${r.feedback?.improve || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  // Clear wrap và append table responsive
+  wrap.innerHTML = '';
+  const responsiveDiv = document.createElement('div');
+  responsiveDiv.className = 'table-responsive';
+  responsiveDiv.appendChild(table);
+  wrap.appendChild(responsiveDiv);
 }
 
 search.addEventListener('input', load);
