@@ -124,8 +124,8 @@
   <div class="hearts" aria-hidden="true"></div>
 
   <!-- Audio -->
-  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop autoplay muted></audio>
-  <button id="musicToggle">🎵 Nhạc: Tắt</button>
+  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop autoplay></audio>
+  <button id="musicToggle">🎵 Nhạc: Bật</button>
 
   <!-- Check login -->
   <script type="module">
@@ -155,32 +155,45 @@
       hearts.appendChild(s);
     }
 
-    // Music autoplay + xử lý mobile
+    // Music autoplay xử lý desktop/mobile
     const music = document.getElementById('bgMusic');
     const toggleBtn = document.getElementById('musicToggle');
     music.volume = 0.2;
 
-    // Cho phép bật tiếng khi user click/touch lần đầu
-    const enableSound = () => {
-      if (music.muted) {
-        music.muted = false;
-        music.play();
-        toggleBtn.textContent = '🎵 Nhạc: Bật';
-      }
-      document.removeEventListener('click', enableSound);
-      document.removeEventListener('touchstart', enableSound);
-    };
-    document.addEventListener('click', enableSound);
-    document.addEventListener('touchstart', enableSound);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // Music toggle button
-    toggleBtn.addEventListener('click', () => {
+    if (isMobile) {
+      // Mobile: autoplay nhưng mute
+      music.muted = true;
+
+      const enableSound = () => {
+        if (music.muted) {
+          music.muted = false;
+          music.play();
+          toggleBtn.textContent = "🎵 Nhạc: Bật";
+        }
+        document.removeEventListener("click", enableSound);
+        document.removeEventListener("touchstart", enableSound);
+      };
+      document.addEventListener("click", enableSound);
+      document.addEventListener("touchstart", enableSound);
+
+      toggleBtn.textContent = "🎵 Nhạc: Tắt"; // vì đang mute
+    } else {
+      // Desktop: autoplay có tiếng
+      music.play().catch(() => {
+        console.log("Trình duyệt desktop chặn autoplay, cần click.");
+      });
+    }
+
+    // Toggle button
+    toggleBtn.addEventListener("click", () => {
       if (music.paused) {
         music.play();
-        toggleBtn.textContent = '🎵 Nhạc: Bật';
+        toggleBtn.textContent = "🎵 Nhạc: Bật";
       } else {
         music.pause();
-        toggleBtn.textContent = '🎵 Nhạc: Tắt';
+        toggleBtn.textContent = "🎵 Nhạc: Tắt";
       }
     });
   </script>
