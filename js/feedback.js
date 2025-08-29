@@ -10,7 +10,10 @@ if (!stored) {
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const data = JSON.parse(localStorage.getItem('quizResult') || '{}');
-  if (!data.id) { alert('Thiếu ID bản ghi.'); return; }
+  if (!data.id) { 
+    alert('Thiếu ID bản ghi.'); 
+    return; 
+  }
 
   const fd = new FormData(form);
   const feedback = {
@@ -18,9 +21,17 @@ form.addEventListener('submit', async (e) => {
     improve: fd.get('improve')
   };
 
+  // Thời gian submit feedback theo giờ Việt Nam
+  const now = new Date();
+  const vnTime = now.toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+
   form.querySelector('button[type="submit"]').disabled = true;
   try {
-    const updated = await updateAnswer(data.id, { ...data, feedback });
+    const updated = await updateAnswer(data.id, { 
+      ...data, 
+      feedback, 
+      feedbackTime: vnTime // thêm trường thời gian feedback
+    });
     localStorage.setItem('quizResult', JSON.stringify(updated));
     alert('Cảm ơn em đã chia sẻ! ❤️');
     window.location.href = 'result.html';

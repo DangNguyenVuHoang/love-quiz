@@ -5,6 +5,11 @@ const form = document.getElementById("quizForm");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const fd = new FormData(form);
+
+  // Lấy thời gian hiện tại ở múi giờ Việt Nam
+  const now = new Date();
+  const vnTime = now.toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+
   const payload = {
     name: fd.get("name"),
     answers: {
@@ -18,6 +23,7 @@ form.addEventListener("submit", async (e) => {
       feeling: "",
       improve: "",
     },
+    quizTime: vnTime, // thời gian làm quiz
   };
 
   form.querySelector('button[type="submit"]').disabled = true;

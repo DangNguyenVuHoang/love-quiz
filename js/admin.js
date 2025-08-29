@@ -47,6 +47,7 @@ function render(rows) {
       <th>Mẫu người lý tưởng</th>
       <th>Cảm nhận</th>
       <th>Góp ý</th>
+      <th>Thời gian Feedback</th>
     </tr>
   `;
   table.appendChild(thead);
@@ -65,6 +66,7 @@ function render(rows) {
       <td>${r.answers?.timhieu || ''}</td>
       <td>${r.feedback?.feeling || ''}</td>
       <td>${r.feedback?.improve || ''}</td>
+      <td>${r.feedbackTime || ''}</td>
     `;
     tbody.appendChild(tr);
   });
