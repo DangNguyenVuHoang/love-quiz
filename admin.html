@@ -15,7 +15,6 @@
       min-height: 100vh;
       font-family: 'Segoe UI', sans-serif;
       padding: 0;
-      /* Loại bỏ padding để header có thể trải rộng toàn màn hình */
       margin: 0;
       display: flex;
       flex-direction: column;
@@ -23,23 +22,17 @@
 
     #header-container {
       width: 100%;
-      /* Header chiếm toàn bộ chiều rộng */
     }
 
     .card-container {
       background-color: rgba(255, 255, 255, 0.2);
       padding: 20px;
-      /* padding cho nội dung thoáng */
       border-radius: 25px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       width: 95%;
-      /* gần full chiều ngang */
       max-width: 1200px;
-      /* giới hạn trên màn hình lớn */
       margin: 20px auto;
-      /* căn giữa và khoảng cách trên/dưới */
       box-sizing: border-box;
-      /* padding tính trong width */
     }
 
     h1 {
@@ -70,17 +63,6 @@
       padding: 8px 20px;
       transition: all 0.3s;
     }
-
-    /* .btn-outline-custom {
-      background-color: transparent;
-      color: #ff6b81;
-      border: 2px solid #ff6b81;
-    } */
-
-    /* .btn-outline-custom:hover {
-      background-color: #ff6b81;
-      color: white;
-    } */
 
     #tableWrap {
       background-color: rgba(255, 255, 255, 0.4);
@@ -124,31 +106,30 @@
     }
 
     .btn-refresh {
-  display: inline-block;
-  padding: 10px 25px;
-  font-weight: bold;
-  font-size: 16px;
-  color: #ff6b81;
-  background-color: transparent;
-  border: 2px solid #ff6b81;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  text-decoration: none;
-  margin: 0; /* reset margin */
-}
+      display: inline-block;
+      padding: 10px 25px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #ff6b81;
+      background-color: transparent;
+      border: 2px solid #ff6b81;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+      margin: 0;
+    }
 
-.btn-refresh:hover {
-  background-color: #ff6b81;
-  color: #fff;
-}
+    .btn-refresh:hover {
+      background-color: #ff6b81;
+      color: #fff;
+    }
 
-.btn-refresh:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 107, 129, 0.5);
-}
-
+    .btn-refresh:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 107, 129, 0.5);
+    }
   </style>
 </head>
 
@@ -159,14 +140,13 @@
     <div class="toolbar">
       <input id="search" class="form-control" placeholder="Tìm theo tên..." />
       <button id="refresh" class="btn-refresh">Làm mới</button>
-      <!-- <button id="refresh" class="btn btn-outline-custom btn-action">Làm mới</button> -->
     </div>
     <div id="tableWrap" class="table table-striped table-hover"></div>
     <a href="index.html" class="btn-back">Quay lại</a>
   </div>
 
   <!-- Audio tự phát -->
-  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop></audio>
+  <audio id="bgMusic" src="music/long-distance-relationship.mp3" autoplay loop muted></audio>
   <!-- Nút bật/tắt nhạc -->
   <button id="musicToggle">🎵 Nhạc: Bật</button>
 
@@ -175,8 +155,8 @@
 
   <script type="module">
     import { requireAdmin } from './js/authGuard.js';
-  requireAdmin(); // chỉ admin mới vào được
-</script>
+    requireAdmin(); // chỉ admin mới vào được
+  </script>
 
   <script>
     fetch('header.html')
@@ -186,17 +166,36 @@
         return import('./js/header.js');
       });
 
-    // Tự động phát nhạc
     const music = document.getElementById('bgMusic');
+    const toggleBtn = document.getElementById('musicToggle');
+
     window.addEventListener('DOMContentLoaded', () => {
       music.volume = 0.2;
-      music.play().catch(() => {
-        console.log('Trình duyệt chặn autoplay. Click nút để bật nhạc.');
-      });
+
+      // Kiểm tra loại thiết bị
+      const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+      if (!isMobile) {
+        // Trên máy tính: bật nhạc có tiếng ngay
+        music.muted = false;
+        music.play().catch(() => console.log('Autoplay bị chặn.'));
+      } else {
+        // Trên điện thoại: nhạc tự phát nhưng muted
+        music.muted = true;
+        music.play().catch(() => console.log('Autoplay bị chặn trên mobile.'));
+        // Sau lần chạm đầu tiên thì bật tiếng
+        const enableSound = () => {
+          music.muted = false;
+          music.play();
+          document.removeEventListener('touchstart', enableSound);
+          document.removeEventListener('click', enableSound);
+        };
+        document.addEventListener('touchstart', enableSound, { once: true });
+        document.addEventListener('click', enableSound, { once: true });
+      }
     });
 
-    // Bật/tắt nhạc
-    const toggleBtn = document.getElementById('musicToggle');
+    // Bật/tắt nhạc bằng nút
     toggleBtn.addEventListener('click', () => {
       if (music.paused) {
         music.play();
