@@ -1,4 +1,11 @@
 import { listAnswers } from './api.js';
+// js/admin.js (đầu file)
+import { isLoggedIn } from './authService.js';
+
+if (!isLoggedIn()) {
+  alert('Bạn cần đăng nhập trước!');
+  window.location.href = 'login.html';
+}
 
 const wrap = document.getElementById('tableWrap');
 const search = document.getElementById('search');
@@ -73,4 +80,10 @@ function render(rows) {
 
 search.addEventListener('input', load);
 refreshBtn.addEventListener('click', load);
+
+// check auth
+const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+if(!currentUser) window.location.href = 'login.html';
+
 load();
+

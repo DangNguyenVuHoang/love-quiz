@@ -11,15 +11,15 @@
     body {
       background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
       min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      overflow-x: hidden;
     }
 
+    /* Floating hearts */
     .hearts span {
       position: absolute;
       animation: float 4s linear infinite;
@@ -32,34 +32,56 @@
       100% { transform: translateY(-600px) rotate(360deg); opacity: 0;}
     }
 
-    .btn-start, .btn-admin {
-      border-radius: 25px; /* bo tròn */
+    /* Card container */
+    .card-container {
+      background-color: rgba(255,255,255,0.25);
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Wrapper căn giữa */
+    .card-container-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Buttons specific for index.html */
+    .card-container .btn {
+      border-radius: 25px;
       font-weight: bold;
       padding: 12px 25px;
       transition: all 0.3s;
       display: inline-block;
     }
 
-    .btn-start {
+    .card-container .btn-start {
       background: #ff6b81;
       color: white;
     }
-    .btn-start:hover {
+    .card-container .btn-start:hover {
       background: #ff3b5f;
       color: white;
     }
 
-    .btn-admin {
+    .card-container .btn-admin {
       background: #ff9aa2;
       color: white;
       margin-top: 15px;
       text-decoration: none;
     }
-    .btn-admin:hover {
+    .card-container .btn-admin:hover {
       background: #ff6b81;
       color: white;
     }
 
+    /* Music toggle button */
     #musicToggle {
       position: fixed;
       bottom: 20px;
@@ -74,36 +96,53 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
-    .card-container {
-      background-color: rgba(255,255,255,0.2);
-      padding: 40px;
-      border-radius: 30px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      max-width: 500px;
+    /* Header styling */
+    header {
+      padding: 1rem 0;
+      background: linear-gradient(to right, #ffdde1, #ee9ca7);
     }
   </style>
 </head>
 <body>
-  <div class="container card-container">
-    <h1 class="display-4 fw-bold mb-3">Xin chào em Khánh Linh ❤️</h1>
-    <p class="lead mb-2">Anh là Hoàng, anh có vài câu hỏi muốn hỏi em có được hông dạ 😗</p>
-    <p class="lead mb-4">Vì anh muốn được tìm hiểu về em nhiều hơn nữa đó ạ</p>
-    <a href="quiz.html" class="btn btn-start mb-3">Bắt đầu ngay</a>
-    <div class="links">
-      <a href="admin.html" class="btn-admin">Trang quản trị</a>
+  <!-- Header -->
+  <div id="header-container"></div>
+
+  <!-- Main card -->
+  <div class="card-container-wrapper">
+    <div class="container card-container text-center">
+      <h1 class="display-4 fw-bold mb-3">Xin chào em Khánh Linh ❤️</h1>
+      <p class="lead mb-2">Anh là Hoàng, anh có vài câu hỏi muốn hỏi em có được hông dạ 😗</p>
+      <p class="lead mb-4">Vì anh muốn được tìm hiểu về em nhiều hơn nữa đó ạ</p>
+      <a href="quiz.html" class="btn btn-start mb-3">Bắt đầu ngay</a>
+      <div class="links">
+        <a href="admin.html" class="btn btn-admin">Trang quản trị</a>
+      </div>
     </div>
   </div>
 
   <!-- Floating hearts -->
   <div class="hearts" aria-hidden="true"></div>
 
-  <!-- Audio tự phát -->
+  <!-- Audio -->
   <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop></audio>
-  <!-- Nút bật/tắt nhạc -->
   <button id="musicToggle">🎵 Nhạc: Bật</button>
 
+  <!-- Check login -->
+  <script type="module">
+    import { requireLogin } from './js/authGuard.js';
+    requireLogin(); // bắt buộc login bất kỳ role nào
+  </script>
+
   <script>
-    // render floating hearts
+    // Header load
+    fetch('header.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('header-container').innerHTML = html;
+        return import('./js/header.js');
+      });
+
+    // Floating hearts
     const hearts = document.querySelector('.hearts');
     for (let i = 0; i < 20; i++) {
       const s = document.createElement('span');
@@ -116,7 +155,7 @@
       hearts.appendChild(s);
     }
 
-    // tự động phát nhạc
+    // Music autoplay
     const music = document.getElementById('bgMusic');
     window.addEventListener('DOMContentLoaded', () => {
       music.volume = 0.2;
@@ -125,7 +164,7 @@
       });
     });
 
-    // bật/tắt nhạc
+    // Music toggle
     const toggleBtn = document.getElementById('musicToggle');
     toggleBtn.addEventListener('click', () => {
       if (music.paused) {

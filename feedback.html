@@ -13,9 +13,14 @@
       min-height: 100vh;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
       align-items: center;
-      padding: 20px;
+      padding: 0; /* Loại bỏ padding để header có thể trải rộng toàn màn hình */
+      margin: 0;
+    }
+
+    #header-container {
+      width: 100%; /* Header chiếm toàn bộ chiều rộng */
     }
 
     .card-container {
@@ -25,6 +30,8 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       width: 100%;
       max-width: 600px;
+      margin-top: 20px; /* Thêm khoảng trống nếu cần */
+      margin-bottom: 20px; /* Thêm khoảng trống dưới cùng */
     }
 
     h1 {
@@ -83,6 +90,7 @@
   </style>
 </head>
 <body>
+  <div id="header-container"></div>
   <div class="card-container">
     <h1>Em cho anh biết cảm nhận nhé ❤️</h1>
     <form id="feedbackForm">
@@ -105,7 +113,19 @@
   <script type="module" src="js/api.js"></script>
   <script type="module" src="js/feedback.js"></script>
 
+<script type="module">
+  import { requireLogin } from './js/authGuard.js';
+  requireLogin(); // bắt buộc login, bất kỳ role nào
+</script>
+
   <script>
+    fetch('header.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('header-container').innerHTML = html;
+        return import('./js/header.js');
+      });
+      
     // tự động phát nhạc
     const music = document.getElementById('bgMusic');
     window.addEventListener('DOMContentLoaded', () => {

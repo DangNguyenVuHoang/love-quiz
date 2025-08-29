@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Quiz Header</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Chỉ áp dụng trong header-container */
+        #header-container header {
+            background: linear-gradient(to right, #ffdde1, #ee9ca7);
+        }
+
+        #header-container #headerRight .btn {
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        #header-container #headerRight .btn:hover {
+            transform: scale(1.05);
+        }
+
+        #header-container #headerRight .welcome-text {
+            font-weight: bold;
+            color: #ff3b5f;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-container">
+        <header class="shadow-sm py-3 mb-4">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a href="index.html" class="h4 text-danger text-decoration-none fw-bold">Love Quiz ❤️</a>
+                <div id="headerRight" class="d-flex align-items-center gap-2">
+                    <!-- JS sẽ render login/logout/admin buttons ở đây -->
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
