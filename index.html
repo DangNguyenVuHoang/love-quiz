@@ -124,8 +124,8 @@
   <div class="hearts" aria-hidden="true"></div>
 
   <!-- Audio -->
-  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop></audio>
-  <button id="musicToggle">🎵 Nhạc: Bật</button>
+  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop autoplay muted></audio>
+  <button id="musicToggle">🎵 Nhạc: Tắt</button>
 
   <!-- Check login -->
   <script type="module">
@@ -155,17 +155,25 @@
       hearts.appendChild(s);
     }
 
-    // Music autoplay
+    // Music autoplay + xử lý mobile
     const music = document.getElementById('bgMusic');
-    window.addEventListener('DOMContentLoaded', () => {
-      music.volume = 0.2;
-      music.play().catch(() => {
-        console.log('Trình duyệt chặn autoplay. Click nút để bật nhạc.');
-      });
-    });
-
-    // Music toggle
     const toggleBtn = document.getElementById('musicToggle');
+    music.volume = 0.2;
+
+    // Cho phép bật tiếng khi user click/touch lần đầu
+    const enableSound = () => {
+      if (music.muted) {
+        music.muted = false;
+        music.play();
+        toggleBtn.textContent = '🎵 Nhạc: Bật';
+      }
+      document.removeEventListener('click', enableSound);
+      document.removeEventListener('touchstart', enableSound);
+    };
+    document.addEventListener('click', enableSound);
+    document.addEventListener('touchstart', enableSound);
+
+    // Music toggle button
     toggleBtn.addEventListener('click', () => {
       if (music.paused) {
         music.play();
