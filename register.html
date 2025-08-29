@@ -63,11 +63,8 @@
 
     .disabled-form {
       opacity: 0.5;
-      /* làm mờ form */
       pointer-events: none;
-      /* không thể click hoặc nhập dữ liệu */
       user-select: none;
-      /* không cho chọn text */
     }
   </style>
 </head>
@@ -84,18 +81,47 @@
     <p class="mt-3">Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
   </div>
 
+  <!-- Nhạc nền -->
   <audio id="bgMusic" src="music/intro-end-of-the-world-a-cappella.mp3" loop></audio>
   <button id="musicToggle">🎵 Nhạc: Bật</button>
-  <!-- Load bcryptJS trước script chính -->
+
+  <!-- bcryptJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 
   <script>
     const music = document.getElementById('bgMusic');
-    window.addEventListener('DOMContentLoaded', () => {
-      music.volume = 0.2;
-      music.play().catch(() => console.log('Autoplay chặn.'));
-    });
     const toggleBtn = document.getElementById('musicToggle');
+    music.volume = 0.2;
+
+    // Kiểm tra mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      music.muted = true; // Mobile autoplay mute
+      music.play().catch(() => console.log("Autoplay bị chặn trên mobile."));
+
+      const enableSound = () => {
+        if (music.muted) {
+          music.muted = false;
+          music.play();
+          toggleBtn.textContent = "🎵 Nhạc: Bật";
+        }
+        document.removeEventListener("click", enableSound);
+        document.removeEventListener("touchstart", enableSound);
+      };
+
+      document.addEventListener("click", enableSound);
+      document.addEventListener("touchstart", enableSound);
+
+      toggleBtn.textContent = "🎵 Nhạc: Tắt"; // vì đang mute
+    } else {
+      // Desktop: autoplay có tiếng
+      window.addEventListener("DOMContentLoaded", () => {
+        music.play().catch(() => console.log("Autoplay desktop có thể bị chặn."));
+      });
+    }
+
+    // Toggle thủ công
     toggleBtn.addEventListener('click', () => {
       if (music.paused) {
         music.play();
@@ -106,6 +132,7 @@
       }
     });
 
+    // Register form (mockAPI)
     const API_URL = 'https://68b054b83b8db1ae9c039b7d.mockapi.io/users';
     document.getElementById('registerForm').addEventListener('submit', async e => {
       e.preventDefault();
@@ -113,21 +140,13 @@
       const password = document.getElementById('password').value;
       if (!username || !password) return;
 
-      // Mã hóa password
       const hashed = dcodeIO.bcrypt.hashSync(password, 10);
 
-      // Gửi lên MockAPI
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            username,
-            password: hashed,
-            role: 'user' // thêm role mặc định
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password: hashed, role: 'user' })
         });
         const user = await res.json();
         alert('Đăng ký thành công! Bạn sẽ được chuyển sang trang đăng nhập.');
@@ -136,10 +155,7 @@
         console.error(err);
         alert('Có lỗi xảy ra. Thử lại.');
       }
-
     });
   </script>
-
 </body>
-
 </html>
