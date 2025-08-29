@@ -155,7 +155,6 @@
       document.addEventListener("click", enableSound);
       document.addEventListener("touchstart", enableSound);
 
-      toggleBtn.textContent = "🎵 Nhạc: Tắt"; // ban đầu mute
     } else {
       music.play().catch(() => {
         console.log("Autoplay có thể bị chặn, user cần click.");
