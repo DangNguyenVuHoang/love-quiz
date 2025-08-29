@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,37 +14,69 @@
       justify-content: center;
       align-items: center;
       font-family: 'Segoe UI', sans-serif;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
     }
+
     .card-container {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
       padding: 30px 25px;
       border-radius: 25px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       width: 100%;
       max-width: 400px;
       text-align: center;
     }
-    h1 { color: #ff3b5f; margin-bottom: 20px; font-weight: bold; }
-    .form-control { margin-bottom: 15px; border-radius: 15px; }
+
+    h1 {
+      color: #ff3b5f;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .form-control {
+      margin-bottom: 15px;
+      border-radius: 15px;
+    }
+
     .btn-primary {
       border-radius: 25px;
       background-color: #ff6b81;
       border: none;
     }
-    .btn-primary:hover { background-color: #ff3b5f; }
+
+    .btn-primary:hover {
+      background-color: #ff3b5f;
+    }
+
     #musicToggle {
-      position: fixed; bottom: 20px; right: 20px;
-      background: rgba(255,192,203,0.9);
-      border: none; padding: 10px 15px; border-radius: 10px;
-      cursor: pointer; z-index: 999;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 192, 203, 0.9);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    .disabled-form {
+      opacity: 0.5;
+      /* làm mờ form */
+      pointer-events: none;
+      /* không thể click hoặc nhập dữ liệu */
+      user-select: none;
+      /* không cho chọn text */
     }
   </style>
 </head>
+
 <body>
   <div class="card-container">
     <h1>Đăng ký ❤️</h1>
-    <form id="registerForm">
+    <h2>🌷 Sorry, Hiện tại đăng ký account chưa áp dụng cho người ngoài ‼️</h2>
+    <form id="registerForm" class="disabled-form">
       <input type="text" id="username" placeholder="Tên đăng nhập" class="form-control" required />
       <input type="password" id="password" placeholder="Mật khẩu" class="form-control" required />
       <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
@@ -53,52 +86,60 @@
 
   <audio id="bgMusic" src="music/intro-end-of-the-world-a-cappella.mp3" loop></audio>
   <button id="musicToggle">🎵 Nhạc: Bật</button>
-<!-- Load bcryptJS trước script chính -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+  <!-- Load bcryptJS trước script chính -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 
-<script>
-const music = document.getElementById('bgMusic');
-window.addEventListener('DOMContentLoaded', () => {
-  music.volume = 0.2;
-  music.play().catch(()=>console.log('Autoplay chặn.'));
-});
-const toggleBtn = document.getElementById('musicToggle');
-toggleBtn.addEventListener('click', () => {
-  if(music.paused){ music.play(); toggleBtn.textContent='🎵 Nhạc: Bật'; }
-  else { music.pause(); toggleBtn.textContent='🎵 Nhạc: Tắt'; }
-});
+  <script>
+    const music = document.getElementById('bgMusic');
+    window.addEventListener('DOMContentLoaded', () => {
+      music.volume = 0.2;
+      music.play().catch(() => console.log('Autoplay chặn.'));
+    });
+    const toggleBtn = document.getElementById('musicToggle');
+    toggleBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        toggleBtn.textContent = '🎵 Nhạc: Bật';
+      } else {
+        music.pause();
+        toggleBtn.textContent = '🎵 Nhạc: Tắt';
+      }
+    });
 
-const API_URL = 'https://68b054b83b8db1ae9c039b7d.mockapi.io/users';
-document.getElementById('registerForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  if(!username || !password) return;
+    const API_URL = 'https://68b054b83b8db1ae9c039b7d.mockapi.io/users';
+    document.getElementById('registerForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      if (!username || !password) return;
 
-  // Mã hóa password
-  const hashed = dcodeIO.bcrypt.hashSync(password, 10);
+      // Mã hóa password
+      const hashed = dcodeIO.bcrypt.hashSync(password, 10);
 
-// Gửi lên MockAPI
-try {
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      username, 
-      password: hashed,
-      role: 'user'  // thêm role mặc định
-    })
-  });
-  const user = await res.json();
-  alert('Đăng ký thành công! Bạn sẽ được chuyển sang trang đăng nhập.');
-  window.location.href = 'login.html';
-} catch(err) {
-  console.error(err);
-  alert('Có lỗi xảy ra. Thử lại.');
-}
+      // Gửi lên MockAPI
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username,
+            password: hashed,
+            role: 'user' // thêm role mặc định
+          })
+        });
+        const user = await res.json();
+        alert('Đăng ký thành công! Bạn sẽ được chuyển sang trang đăng nhập.');
+        window.location.href = 'login.html';
+      } catch (err) {
+        console.error(err);
+        alert('Có lỗi xảy ra. Thử lại.');
+      }
 
-});
-</script>
+    });
+  </script>
 
 </body>
+
 </html>
