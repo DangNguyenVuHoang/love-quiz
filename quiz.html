@@ -15,12 +15,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0; /* Loại bỏ padding để header có thể trải rộng toàn màn hình */
+      padding: 0;
       margin: 0;
     }
 
     #header-container {
-      width: 100%; /* Header chiếm toàn bộ chiều rộng */
+      width: 100%;
     }
 
     .card-container {
@@ -30,7 +30,7 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       width: 100%;
       max-width: 600px;
-      margin: 20px 0; /* Thêm margin top và bottom */
+      margin: 20px 0;
     }
 
     h1 {
@@ -113,45 +113,63 @@
     </form>
   </div>
 
-  <!-- Audio tự phát -->
-  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop></audio>
+  <!-- Audio -->
+  <audio id="bgMusic" src="music/long-distance-relationship.mp3" loop autoplay></audio>
   <!-- Nút bật/tắt nhạc -->
   <button id="musicToggle">🎵 Nhạc: Bật</button>
 
   <script type="module" src="js/api.js"></script>
   <script type="module" src="js/quiz.js"></script>
 
-<script type="module">
-  import { requireLogin } from './js/authGuard.js';
-  requireLogin(); // bắt buộc login, bất kỳ role nào
-</script>
+  <script type="module">
+    import { requireLogin } from './js/authGuard.js';
+    requireLogin();
+  </script>
 
   <script>
+    // load header
     fetch('header.html')
       .then(res => res.text())
       .then(html => {
         document.getElementById('header-container').innerHTML = html;
         return import('./js/header.js');
       });
-      
-    // tự động phát nhạc
-    const music = document.getElementById('bgMusic');
-    window.addEventListener('DOMContentLoaded', () => {
-      music.volume = 0.2;
-      music.play().catch(() => {
-        console.log('Trình duyệt chặn autoplay. Click nút để bật nhạc.');
-      });
-    });
 
-    // bật/tắt nhạc
+    const music = document.getElementById('bgMusic');
     const toggleBtn = document.getElementById('musicToggle');
-    toggleBtn.addEventListener('click', () => {
+    music.volume = 0.2;
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      music.muted = true;
+      const enableSound = () => {
+        if (music.muted) {
+          music.muted = false;
+          music.play();
+          toggleBtn.textContent = "🎵 Nhạc: Bật";
+        }
+        document.removeEventListener("click", enableSound);
+        document.removeEventListener("touchstart", enableSound);
+      };
+      document.addEventListener("click", enableSound);
+      document.addEventListener("touchstart", enableSound);
+
+      toggleBtn.textContent = "🎵 Nhạc: Tắt"; // ban đầu mute
+    } else {
+      music.play().catch(() => {
+        console.log("Autoplay có thể bị chặn, user cần click.");
+      });
+    }
+
+    // Nút bật/tắt nhạc
+    toggleBtn.addEventListener("click", () => {
       if (music.paused) {
         music.play();
-        toggleBtn.textContent = '🎵 Nhạc: Bật';
+        toggleBtn.textContent = "🎵 Nhạc: Bật";
       } else {
         music.pause();
-        toggleBtn.textContent = '🎵 Nhạc: Tắt';
+        toggleBtn.textContent = "🎵 Nhạc: Tắt";
       }
     });
   </script>
